@@ -4,7 +4,6 @@ class Heroku::Command::Redis < Heroku::Command::Base
   def cli(*queries)
     # Must remember to extract these so they don't get passed to redis-cli
     db = extract_option("--db") || 'REDISTOGO_URL'
-    app = extract_app
 
     redis_url = heroku.config_vars(app)[db]
     return puts "No such redis (#{db}), try setting --db REDIS_URL." unless redis_url
@@ -23,4 +22,10 @@ class Heroku::Command::Redis < Heroku::Command::Base
 
   def monitor; cli 'monitor'; end
   def info; cli 'info'; end
+
+  def app
+    super
+  rescue Heroku::Command::CommandFailed
+    nil
+  end
 end
